@@ -6,9 +6,11 @@
 //
 // Helper macros.
 //
-#define _ip this->instruction_pointer
+#define _ip this->registers[IP].data
 #define _regs this->registers
 #define _program this->current_program
+#define _sp this->registers[SP].data
+#define _stack this->stack
 
 // Clean up the condition opcodes.
 #define PROOVE_2_ARGS(condition) _ip++; \
@@ -30,7 +32,7 @@ if(_regs[abs(_program[_ip])].data condition 0) { \
     } \
   } else { \
     if(_regs[_program[_ip + 1]].data condition _program[_ip + 2]) { \
-      _ip = _program[_ip + 3]; \
+      _ip = _regs[_program[_ip + 3]].data; \
       return; \
     } \
   } \
@@ -41,13 +43,13 @@ if(_regs[abs(_program[_ip])].data condition 0) { \
       return; \
     } \
   } else { \
-    if(_program[_ip + 1] condition _program[_ip + 2]) { \
+    if(_regs[ _program[_ip + 1]].data condition _program[_ip + 2]) { \
       _ip = _program[_ip + 3]; \
       return; \
     } \
   } \
 } \
-_ip += 4
+_ip += 4;
 
 #define ALTER_REGISTERS(operator) _ip++; \
 if(_program[_ip] - 1 < 0) { \
@@ -65,14 +67,13 @@ void _VM_NOP(VM* this) { _ip++; }
 
 // Load a value into a register
 void _VM_MOV(VM* this) {
-  // LOADi a, 56;
-  _ip++;
-  if(_program[_ip] - 1 < 0) {
-    _regs[-_program[_ip]].data = _regs[_program[_ip + 1]].data;
+  if(_program[_ip + 1] - 1 < 0) {
+    _regs[-_program[_ip + 1]].data = _regs[_program[_ip + 2]].data;
   } else {
-    _regs[ _program[_ip]].data = _program[_ip + 1];
+    _regs[ _program[_ip + 1]].data = _program[_ip + 2];
   }
-  _ip += 2;
+  _ip += 3;
+  // PRINT_REGS(this);
 }
 
 // Add to a numJEr or a register
@@ -97,12 +98,12 @@ void _VM_DIV(VM* this) {
 
 // Set the instruction pointer.
 void _VM_JMP(VM* this) {
-  _ip++;
-  if(_program[_ip] - 1 < 0) {
-    _ip = _regs[_program[_ip]].data;
+  if(_program[_ip + 1] - 1 < 0) {
+    _ip = _regs[_program[_ip + 1]].data;
   } else {
-    _ip = _program[_ip];
+    _ip = _program[_ip + 1];
   }
+  _ip++;
 }
 
 // Jump if zero.
@@ -133,6 +134,30 @@ void _VM_JLT(VM* this) {
   PROOVE_3_ARGS(<);
 }
 
+void _VM_PUSH(VM* this) {
+  assert(_sp < STACK_SIZE);
+  if(_program[_ip] - 1 < 0) {
+    _stack[_sp] = _regs[_program[_ip + 1]].data;
+  } else {
+    _stack[_sp] = _program[_ip + 1];
+  }
+  // printf("PUSH: %c\nIP: %d\n", _stack[_sp], _ip);
+  _sp++;
+  _ip += 2;
+}
+
+void _VM_POP(VM* this) {
+  assert(_sp >= 0);
+  _regs[_program[_ip + 1]].data = _stack[--_sp];
+  // printf("POP: %c\nIP: %d\n", _stack[_sp], _ip);
+  _ip += 2;
+}
+
+void _VM_OUT(VM* this) {
+  printf("%c", _regs[_program[_ip + 1]].data);
+  _ip += 2;
+}
+
 void (*opcodes[])(VM*) = {
   [NOP]  = _VM_NOP,
   [MOV]  = _VM_MOV,
@@ -147,6 +172,9 @@ void (*opcodes[])(VM*) = {
   [JNE]  = _VM_JNE,
   [JLT]  = _VM_JLT,
   [JGT]  = _VM_JGT,
+  [PUSH] = _VM_PUSH,
+  [POP]  = _VM_POP,
+  [OUT]  = _VM_OUT, // For debug only!
   [HALT] = _VM_NOP,
 };
 
@@ -155,6 +183,8 @@ void (*opcodes[])(VM*) = {
 #undef _ip
 #undef _regs
 #undef _program
+#undef _sp
+#undef _stack
 #undef PROOVE_2_ARGS
 #undef PROOVE_3_ARGS
 #undef ALTER_REGISTERS

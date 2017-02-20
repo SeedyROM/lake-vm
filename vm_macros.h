@@ -8,7 +8,9 @@
 )
 
 #define PRINT_REGS(vm) printf("Reg[A]: %d\n", vm->registers[A].data); \
-                       printf("Reg[B]: %d\n", vm->registers[B].data); \
-                       printf("Reg[C]: %d\n\n", vm->registers[C].data)
+printf("Reg[B]: %d\n", vm->registers[B].data); \
+printf("Reg[C]: %d\n", vm->registers[C].data); \
+printf("SP: %d\n", vm->registers[SP].data); \
+printf("IP: %d\n\n", vm->registers[IP].data); \
 
 #endif

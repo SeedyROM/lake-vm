@@ -16,5 +16,3 @@
 #endif
 
 #endif
-
-typedef double vm_float_t;

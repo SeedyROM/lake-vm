@@ -10,6 +10,8 @@ typedef enum _Register_Names {
   C,
   D,
   E,
+  IP,
+  SP,
   FLAGS,
 } Register_Names;
 typedef union _Register {
@@ -37,14 +39,14 @@ typedef enum _OPCode_Names {
   JLT,
   JGT,
   JMP,
+  PUSH,
+  POP,
+  OUT,
   HALT,
 } OPCode_Names;
 
 // The VM.
 typedef struct _VM {
-  vm_uint_t program_counter;
-  vm_uint_t stack_pointer;
-  vm_uint_t instruction_pointer;
   vm_int_t *stack;
   Register *registers;
   vm_int_t *current_program;
