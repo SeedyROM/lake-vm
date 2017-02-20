@@ -68,7 +68,11 @@ void _VM_NOP(VM* this) { _ip++; }
 // Load a value into a register
 void _VM_MOV(VM* this) {
   if(_program[_ip + 1] - 1 < 0) {
-    _regs[-_program[_ip + 1]].data = _regs[_program[_ip + 2]].data;
+    if(_program[_ip + 2] == IP) {
+      _regs[-_program[_ip + 1]].data = _regs[_program[_ip + 2]].data + 3;
+    } else {
+      _regs[-_program[_ip + 1]].data = _regs[_program[_ip + 2]].data;
+    }
   } else {
     _regs[ _program[_ip + 1]].data = _program[_ip + 2];
   }
@@ -154,7 +158,11 @@ void _VM_POP(VM* this) {
 }
 
 void _VM_OUT(VM* this) {
-  printf("%c", _regs[_program[_ip + 1]].data);
+  if(_program[_ip] - 1 < 0) {
+    printf("%c", _program[_ip + 1]);
+  } else {
+    printf("%c", _regs[_program[_ip + 1]].data);
+  }
   _ip += 2;
 }
 
