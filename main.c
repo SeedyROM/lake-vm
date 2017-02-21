@@ -22,6 +22,13 @@ const vm_int_t program[] = {
   OUT,   C,
  -JGT,   A, 0, B,
 
+  NOP, NOP, NOP,
+  MOV, A, 1,
+  MOV, C, 20,
+  MOV, -B, IP,
+  ADD, -A, C,
+ -JLT,  A, 3289324, B,
+
   HALT,
 };
 

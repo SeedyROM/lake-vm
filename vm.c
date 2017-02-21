@@ -43,6 +43,7 @@ void run_VM(VM* this) {
     (*opcodes[
       abs(this->current_program[this->registers[IP].data])
     ])(this);
-    // PRINT_REGS(this);
+    PROGRAM_INFO(this);
+    PRINT_REGS(this);
   }
 }
