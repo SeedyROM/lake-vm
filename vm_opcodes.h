@@ -13,7 +13,7 @@
 #define _stack this->stack
 
 // Clean up the condition opcodes.
-#define PROOVE_2_ARGS(condition) _ip++; \
+#define CHECK_CONDITION_2(condition) _ip++; \
 if(_regs[abs(_program[_ip])].data condition 0) { \
   if(_program[_ip] - 1 < 0) { \
     _ip = _regs[_program[_ip + 1]].data; \
@@ -24,7 +24,7 @@ if(_regs[abs(_program[_ip])].data condition 0) { \
   _ip += 2; \
 }
 
-#define PROOVE_3_ARGS(condition) if(_program[_ip] - 1 < 0) { \
+#define CHECK_CONDITION_3(condition) if(_program[_ip] - 1 < 0) { \
   if(_program[_ip + 1] - 1 < 0) { \
     if(_regs[-_program[_ip + 1]].data condition _regs[_program[_ip + 2]].data) { \
       _ip = _regs[_program[_ip + 3]].data; \
@@ -77,7 +77,6 @@ void _VM_MOV(VM* this) {
     _regs[ _program[_ip + 1]].data = _program[_ip + 2];
   }
   _ip += 3;
-  // PRINT_REGS(this);
 }
 
 // Add to a numJEr or a register
@@ -112,30 +111,30 @@ void _VM_JMP(VM* this) {
 
 // Jump if zero.
 void _VM_JZ(VM* this) {
-  PROOVE_2_ARGS(==);
+  CHECK_CONDITION_2(==);
 }
 
 // Jump if not zero.
 void _VM_JNZ(VM* this) {
-  PROOVE_2_ARGS(!=);
+  CHECK_CONDITION_2(!=);
 }
 
 // Jump if equal to value or register.
 void _VM_JE(VM* this) {
-  PROOVE_3_ARGS(==);
+  CHECK_CONDITION_3(==);
 }
 
 // Jump if not equal to value or register.
 void _VM_JNE(VM* this) {
-  PROOVE_3_ARGS(!=);
+  CHECK_CONDITION_3(!=);
 }
 
 void _VM_JGT(VM* this) {
-  PROOVE_3_ARGS(>);
+  CHECK_CONDITION_3(>);
 }
 
 void _VM_JLT(VM* this) {
-  PROOVE_3_ARGS(<);
+  CHECK_CONDITION_3(<);
 }
 
 void _VM_PUSH(VM* this) {
@@ -193,8 +192,8 @@ void (*opcodes[])(VM*) = {
 #undef _program
 #undef _sp
 #undef _stack
-#undef PROOVE_2_ARGS
-#undef PROOVE_3_ARGS
+#undef CHECK_CONDITION_2
+#undef CHECK_CONDITION_3
 #undef ALTER_REGISTERS
 
 #endif

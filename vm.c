@@ -38,12 +38,11 @@ int load_VM_Program(VM* this, const vm_int_t* program) {
 
 void run_VM(VM* this) {
   assert(this->current_program != NULL);
-  // PRINT_REGS(this);
   while(this->current_program[this->registers[IP].data] != HALT) {
     (*opcodes[
       abs(this->current_program[this->registers[IP].data])
     ])(this);
-    PROGRAM_INFO(this);
-    PRINT_REGS(this);
+    // PROGRAM_INFO(this);
+    // PRINT_REGS(this);
   }
 }
