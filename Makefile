@@ -6,3 +6,7 @@ all: vm.o
 
 vm.o: vm.h vm.c vm_macros.h vm_opcodes.h vm_types.h
 	$(CC) -c vm.c $(FLAGS)
+
+clean:
+	rm *.o
+	rm -rf *.dSYM/
