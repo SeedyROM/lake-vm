@@ -1,5 +1,5 @@
 CC= gcc
-FLAGS= -Wall -std=c11 -g -O0
+FLAGS= -Wall -std=c11 -O3
 
 all: vm.o
 	$(CC) main.c vm.o -o lake-vm $(FLAGS)

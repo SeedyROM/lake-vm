@@ -15,49 +15,49 @@
 // Clean up the condition opcodes.
 #define CHECK_CONDITION_2(condition) _ip++; \
 if(_regs[abs(_program[_ip])].data condition 0) { \
-  if(_program[_ip] - 1 < 0) { \
-    _ip = _regs[_program[_ip + 1]].data; \
+    if(_program[_ip] - 1 < 0) { \
+      _ip = _regs[_program[_ip + 1]].data; \
+    } else { \
+      _ip = _program[_ip + 1]; \
+    } \
   } else { \
-    _ip = _program[_ip + 1]; \
-  } \
-} else { \
-  _ip += 2; \
-}
+    _ip += 2; \
+  }
 
 #define CHECK_CONDITION_3(condition) if(_program[_ip] - 1 < 0) { \
-  if(_program[_ip + 1] - 1 < 0) { \
-    if(_regs[-_program[_ip + 1]].data condition _regs[_program[_ip + 2]].data) { \
-      _ip = _regs[_program[_ip + 3]].data; \
-      return; \
+    if(_program[_ip + 1] - 1 < 0) { \
+      if(_regs[-_program[_ip + 1]].data condition _regs[_program[_ip + 2]].data) { \
+        _ip = _regs[_program[_ip + 3]].data; \
+        return; \
+      } \
+    } else { \
+      if(_regs[_program[_ip + 1]].data condition _program[_ip + 2]) { \
+        _ip = _regs[_program[_ip + 3]].data; \
+        return; \
+      } \
     } \
   } else { \
-    if(_regs[_program[_ip + 1]].data condition _program[_ip + 2]) { \
-      _ip = _regs[_program[_ip + 3]].data; \
-      return; \
+    if(_program[_ip + 1] - 1 < 0) { \
+      if(_regs[-_program[_ip + 1]].data condition _program[_ip + 2]) { \
+        _ip = _program[_ip + 3]; \
+        return; \
+      } \
+    } else { \
+      if(_regs[ _program[_ip + 1]].data condition _program[_ip + 2]) { \
+        _ip = _program[_ip + 3]; \
+        return; \
+      } \
     } \
   } \
-} else { \
-  if(_program[_ip + 1] - 1 < 0) { \
-    if(_regs[-_program[_ip + 1]].data condition _program[_ip + 2]) { \
-      _ip = _program[_ip + 3]; \
-      return; \
-    } \
-  } else { \
-    if(_regs[ _program[_ip + 1]].data condition _program[_ip + 2]) { \
-      _ip = _program[_ip + 3]; \
-      return; \
-    } \
-  } \
-} \
-_ip += 4;
+  _ip += 4;
 
 #define ALTER_REGISTERS(operator) _ip++; \
-if(_program[_ip] - 1 < 0) { \
-  _regs[-_program[_ip]].data operator _regs[_program[_ip + 1]].data; \
-} else { \
-  _regs[ _program[_ip]].data operator _program[_ip + 1]; \
-} \
-_ip += 2;
+  if(_program[_ip] - 1 < 0) { \
+    _regs[-_program[_ip]].data operator _regs[_program[_ip + 1]].data; \
+  } else { \
+    _regs[ _program[_ip]].data operator _program[_ip + 1]; \
+  } \
+  _ip += 2;
 //
 // End helper macros.
 //

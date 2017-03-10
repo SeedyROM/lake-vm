@@ -7,6 +7,8 @@
 VM *vm;
 
 const vm_int_t program[] = {
+  MOV,  -G,  0,
+  MOV,  -F, IP,
   PUSH,  '\0',
   PUSH,  '\n',
   PUSH,  '!',
@@ -22,12 +24,8 @@ const vm_int_t program[] = {
   OUT,   C,
  -JGT,   A, 0, B,
 
-  NOP, NOP, NOP,
-  MOV, A, 1,
-  MOV, C, 20,
-  MOV, -B, IP,
-  ADD, -A, C,
- -JLT,  A, 3289324, B,
+  ADD,   G, 1,
+ -JLT,   G, 20000, F,
 
   HALT,
 };
