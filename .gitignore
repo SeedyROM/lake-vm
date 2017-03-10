@@ -1,2 +1,3 @@
 *.o
 lake-vm
+lake-vm.dSYM/
